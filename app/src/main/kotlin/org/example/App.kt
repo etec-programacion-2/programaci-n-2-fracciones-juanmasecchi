@@ -4,24 +4,29 @@
 package org.example
 
 fun main() {
-    val f1 = Fraccion(1, 2)
+    val f1 = Fraccion(2, 3)
     val f2 = Fraccion(3, 4)
 
     println("Fracción 1: $f1")
     println("Fracción 2: $f2")
 
-    val suma = f1 + f2
-    val resta = f1 - f2
+    // Suma
+    println("Suma: ${f1 + f2}")
 
-    println("Suma: $suma")
-    println("Resta: $resta")
+    // Resta
+    println("Resta: ${f1 - f2}")
 
-    // Más ejemplos
-    val f3 = Fraccion(5, 6)
-    val f4 = Fraccion(1, 3)
+    // Multiplicación
+    println("Multiplicación: ${f1 * f2}")
 
-    println("Fracción 3: $f3")
-    println("Fracción 4: $f4")
-    println("Suma: ${f3 + f4}")
-    println("Resta: ${f3 - f4}")
+    // División
+    println("División: ${f1 / f2}")
+
+    // Prueba de división por fracción con numerador cero
+    try {
+        val f3 = Fraccion(0, 5)
+        println("División inválida: ${f1 / f3}")
+    } catch (e: IllegalArgumentException) {
+        println("Error al dividir: ${e.message}")
+    }
 }

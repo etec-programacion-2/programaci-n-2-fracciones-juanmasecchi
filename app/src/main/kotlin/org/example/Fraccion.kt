@@ -70,3 +70,21 @@ operator fun Fraccion.minus(otra: Fraccion): Fraccion {
     val nuevoDenominador = this.denominador * otra.denominador
     return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
 }
+
+// Multiplicación
+operator fun Fraccion.times(otra: Fraccion): Fraccion {
+    val nuevoNumerador = this.numerador * otra.numerador
+    val nuevoDenominador = this.denominador * otra.denominador
+    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
+}
+
+// División
+operator fun Fraccion.div(otra: Fraccion): Fraccion {
+    if (otra.numerador == 0) {
+        throw IllegalArgumentException("No se puede dividir por una fracción con numerador cero")
+    }
+
+    val nuevoNumerador = this.numerador * otra.denominador
+    val nuevoDenominador = this.denominador * otra.numerador
+    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
+}
