@@ -29,4 +29,21 @@ fun main() {
     } catch (e: IllegalArgumentException) {
         println("Error al dividir: ${e.message}")
     }
+
+    // Comparaciones
+    println("¿f1 es mayor que f2? ${f1.esMayor(f2)}")
+    println("¿f1 es menor que f2? ${f1.esMenor(f2)}")
+
+    // Conversión a decimal
+    println("f1 en decimal: ${f1.aDecimal()}")
+    println("f2 en decimal: ${f2.aDecimal()}")
+
+    // Crear fracción a partir de un decimal
+    val decimal = 0.75
+    val f4 = Fraccion.desdeDecimal(decimal)
+    println("Fracción a partir de $decimal: $f4")
+
+    // Comparación de igualdad
+    val f5 = Fraccion(2, 3)
+    println("¿f1 es igual a f5? ${f1 == f5}")
 }

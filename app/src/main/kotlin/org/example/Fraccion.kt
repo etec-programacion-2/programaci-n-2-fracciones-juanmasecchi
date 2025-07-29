@@ -1,12 +1,12 @@
 package org.example
 
-// Clase Fracción
 class Fraccion(numerador: Int, denominador: Int) {
 
     var numerador: Int = numerador
         get() = field
         set(value) {
             field = value
+            // No llamar a simplificar aquí
         }
 
     var denominador: Int = denominador
@@ -16,75 +16,99 @@ class Fraccion(numerador: Int, denominador: Int) {
                 throw IllegalArgumentException("El denominador no puede ser cero")
             }
             field = value
+            // No llamar a simplificar aquí
         }
 
     init {
         if (denominador == 0) {
             throw IllegalArgumentException("El denominador no puede ser cero")
         }
+        simplificar()
     }
 
-    override fun toString(): String {
-        return "$numerador/$denominador"
+    private fun mcd(a: Int, b: Int): Int {
+        return if (b == 0) kotlin.math.abs(a) else mcd(b, a % b)
     }
 
-    fun mostrar() {
-        println(this.toString())
-    }
-}
+    private fun simplificar(): Fraccion {
+        if (numerador == 0) {
+            denominador = 1
+            return this
+        }
 
-// Algoritmo de Euclides para MCD
-private fun mcd(a: Int, b: Int): Int {
-    var num1 = kotlin.math.abs(a)
-    var num2 = kotlin.math.abs(b)
-    while (num2 != 0) {
-        val temp = num2
-        num2 = num1 % num2
-        num1 = temp
-    }
-    return num1
-}
+        val divisor = mcd(numerador, denominador)
+        numerador /= divisor
+        denominador /= divisor
 
-// Método de extensión para simplificar
-fun Fraccion.simplificar(): Fraccion {
-    val divisor = mcd(this.numerador, this.denominador)
-    var num = this.numerador / divisor
-    var den = this.denominador / divisor
-    if (den < 0) {
-        num *= -1
-        den *= -1
-    }
-    return Fraccion(num, den)
-}
+        // Manejo de signos
+        if (denominador < 0) {
+            numerador = -numerador
+            denominador = -denominador
+        }
 
-// Suma
-operator fun Fraccion.plus(otra: Fraccion): Fraccion {
-    val nuevoNumerador = this.numerador * otra.denominador + otra.numerador * this.denominador
-    val nuevoDenominador = this.denominador * otra.denominador
-    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
-}
-
-// Resta
-operator fun Fraccion.minus(otra: Fraccion): Fraccion {
-    val nuevoNumerador = this.numerador * otra.denominador - otra.numerador * this.denominador
-    val nuevoDenominador = this.denominador * otra.denominador
-    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
-}
-
-// Multiplicación
-operator fun Fraccion.times(otra: Fraccion): Fraccion {
-    val nuevoNumerador = this.numerador * otra.numerador
-    val nuevoDenominador = this.denominador * otra.denominador
-    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
-}
-
-// División
-operator fun Fraccion.div(otra: Fraccion): Fraccion {
-    if (otra.numerador == 0) {
-        throw IllegalArgumentException("No se puede dividir por una fracción con numerador cero")
+        return this
     }
 
-    val nuevoNumerador = this.numerador * otra.denominador
-    val nuevoDenominador = this.denominador * otra.numerador
-    return Fraccion(nuevoNumerador, nuevoDenominador).simplificar()
+    override fun toString(): String = "$numerador/$denominador"
+
+    fun mostrar() = println(this.toString())
+
+    fun aDecimal(): Double = numerador.toDouble() / denominador
+
+    fun esMayor(otra: Fraccion): Boolean = this > otra
+
+    fun esMenor(otra: Fraccion): Boolean = this < otra
+
+    companion object {
+        fun desdeDecimal(decimal: Double): Fraccion {
+            val precision = 1_000_000
+            val numerador = (decimal * precision).toInt()
+            val denominador = precision
+            return Fraccion(numerador, denominador)
+        }
+    }
+
+    // --- Operadores ---
+    operator fun plus(otra: Fraccion): Fraccion {
+        val nuevoNumerador = this.numerador * otra.denominador + otra.numerador * this.denominador
+        val nuevoDenominador = this.denominador * otra.denominador
+        return Fraccion(nuevoNumerador, nuevoDenominador)
+    }
+
+    operator fun minus(otra: Fraccion): Fraccion {
+        val nuevoNumerador = this.numerador * otra.denominador - otra.numerador * this.denominador
+        val nuevoDenominador = this.denominador * otra.denominador
+        return Fraccion(nuevoNumerador, nuevoDenominador)
+    }
+
+    operator fun times(otra: Fraccion): Fraccion {
+        val nuevoNumerador = this.numerador * otra.numerador
+        val nuevoDenominador = this.denominador * otra.denominador
+        return Fraccion(nuevoNumerador, nuevoDenominador)
+    }
+
+    operator fun div(otra: Fraccion): Fraccion {
+        if (otra.numerador == 0) {
+            throw IllegalArgumentException("No se puede dividir por una fracción con numerador cero")
+        }
+        val nuevoNumerador = this.numerador * otra.denominador
+        val nuevoDenominador = this.denominador * otra.numerador
+        return Fraccion(nuevoNumerador, nuevoDenominador)
+    }
+
+    // --- Comparación ---
+    operator fun compareTo(otra: Fraccion): Int {
+        val diferencia = this.numerador * otra.denominador - otra.numerador * this.denominador
+        return diferencia.compareTo(0)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Fraccion) return false
+        return this.numerador == other.numerador && this.denominador == other.denominador
+    }
+
+    override fun hashCode(): Int {
+        return 31 * numerador + denominador
+    }
 }
