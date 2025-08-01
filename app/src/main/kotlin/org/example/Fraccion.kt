@@ -1,29 +1,12 @@
 package org.example
 
-class Fraccion(numerador: Int, denominador: Int) {
-
-    var numerador: Int = numerador
-        get() = field
-        set(value) {
-            field = value
-            // No llamar a simplificar aquí
-        }
-
-    var denominador: Int = denominador
-        get() = field
-        set(value) {
-            if (value == 0) {
-                throw IllegalArgumentException("El denominador no puede ser cero")
-            }
-            field = value
-            // No llamar a simplificar aquí
-        }
+class Fraccion(var numerador: Int, var denominador: Int) {
 
     init {
         if (denominador == 0) {
             throw IllegalArgumentException("El denominador no puede ser cero")
         }
-        simplificar()
+        simplificar() // Simplificar la fracción al momento de ser creada
     }
 
     private fun mcd(a: Int, b: Int): Int {
